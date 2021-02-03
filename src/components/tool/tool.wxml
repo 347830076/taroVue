@@ -5,9 +5,11 @@
         <view class="control-box" catchtap="emptyFun">
           <view>
             <view catchtap="reportDate"> 数据上报 </view>
-            <!-- <view catchtap="clearStorage"> 清除缓存数据 </view> -->
-            <view wx:for="{{menu}}" catchtap="item.callback" wx:key="index"
-            > {{item.name}} </view>
+            <view catchtap="clearStorage"> 清除缓存数据 </view>
+            <view wx:for="{{menu}}"  wx:key="index"
+            > 
+              <view catchtap="myCallback" data-name="{{item.name}}">{{item.name}}</view>
+            </view>
             <view catchtap="showBoxFun"> 关闭弹窗 </view>
             <view catchtap="isCloseFun"> 关闭工具 </view>
           </view>

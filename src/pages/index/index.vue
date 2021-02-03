@@ -3,7 +3,7 @@
     <NumberDisplay/>
     <NumberSubmit/>
     <!-- <FrontTool /> -->
-    <tool />
+    <tool :menu="menu" />
     <view @tap="go">点我请求</view>
   </view>
 </template>
@@ -19,6 +19,16 @@ export default {
     NumberDisplay,
     NumberSubmit,
     FrontTool
+  },
+  data(){
+    return {
+      menu: [{
+        name: 'asdg',
+        callback: function (){
+          console.log(111);
+        }
+      }]
+    }
   },
   mounted(){
     console.log('121');

@@ -36,6 +36,9 @@ Component({
   options: {
     styleIsolation: 'isolated'
   },
+  properties: {
+    menu: Array // 简化的定义方式
+  },
   // 组件生命周期函数-在组件实例进入页面节点树时执行
   created: function () { 
     // 获取运行环境
@@ -61,12 +64,25 @@ Component({
             showBox: !this.data.showBox
         })
     },
-    
+    myCallback(e){
+      const name = e.target.dataset.name
+      this.data.menu.filter(r => r.name === name)[0].callback()
+    },
     // 关闭工具
     isCloseFun(){
         this.setData({
             isClose: !this.data.isClose
         })
+    },
+    // 清除缓存
+    clearStorage() {
+      wx.clearStorageSync()
+      this.setData({
+        showBox: !this.data.showBox,
+        showTips: true,
+        tips: '数据清除成功，即将重新加载'
+      })
+
     },
     // 获取运行环境
     getRuntimeEnv() {
