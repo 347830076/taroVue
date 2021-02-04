@@ -9,14 +9,11 @@ let ajaxData = {}
 let ajaxList = []
 wxResetRequest({
   request(req){
-    console.log('wxResetRequest req', req);
     if(req.url.indexOf(serverURL) === -1){
       ajaxData['request'] = req
-      // flag = true
     }
   },
   response(res){
-    console.log('wxResetRequest res', res)
       ajaxData['response'] = res
       ajaxList.push(ajaxData)
   }
@@ -25,10 +22,7 @@ Component({
   data: {
       tips: '', // 提示文案
       tipsTimeout: -1, // 提示文案重置计时器
-      browserType: '', // 浏览器类型
       runtimeEnv: '开发', // 当前运行环境
-      globalData: {}, // 自定义全局数据，每个上报的数据都有，用于保存用户名等固定信息
-      customData: {}, // 自定义数据
       showTips: false, // 是否显示控制面板
       showBox: false, // 是否显示控制面板
       isClose: false, // 是否关闭工具
@@ -94,6 +88,8 @@ Component({
     },
     // 上报数据
     reportDate(){
+      console.log('wx ', wx);
+      console.log('wx.customData ', wx.customData);
       const that = this;
       if(!ajaxList.length){
         wx.showToast({
@@ -106,24 +102,17 @@ Component({
       }
       const bugClass = AV.Object.extend('bug')
       let bug = new bugClass()
-      console.log('当前环境', this.runtimeEnv);
       // 获取当前页面信息
       let pages = getCurrentPages();
       let currPage = pages[pages.length - 1];
-      console.log(currPage)  
-      // console.log('页面路径', getCurrentInstance().router.path);
 
       bug.set('env', this.runtimeEnv) // 当前环境
       bug.set('hostEnv', '小程序') // 运行的浏览器
-      console.log('页面路径', currPage.__route__);
       bug.set('pageURL', currPage.__route__) // 页面路径
       bug.set('params', currPage.options) // 页面参数
-
       const systemInfo = wx.getSystemInfoSync()
-      console.log('系统信息', systemInfo);
-
-      bug.set('useragent', JSON.stringify(systemInfo)) // 浏览器信息
-      console.log('ajax', ajaxList);
+      bug.set('useragent', JSON.stringify(systemInfo)) // 手机信息
+      bug.set('custom', Object.assign({}, wx.globalData, wx.customData)) // 自定义数据
       bug.set('ajax', ajaxList) // 接口信息
       bug.save().then((res) => {
         that.setData({
@@ -132,6 +121,11 @@ Component({
           tips: `数据上报成功，信息ID为：${res.id}`
         })
         ajaxList = []
+        setTimeout(() => {
+          that.setData({
+            showTips: false,
+          })
+        }, 3000);
       }, function (error) {
         console.log(error);
         wx.showToast({

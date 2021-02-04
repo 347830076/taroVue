@@ -84,7 +84,7 @@
   .c-tips {
     position: fixed;
     padding: 0 14px;
-    top: -50rpx;
+    top: -100rpx;
     left: 50%;
     height: 40px;
     color: #69C6D2;

@@ -1,5 +1,4 @@
-
-// 浅拷贝一个对象
+// 拷贝一个对象
 let _extends = Object.assign || function (target) {
   for (let i = 1; i < arguments.length; i++) {
     let source = arguments[i];
@@ -11,6 +10,19 @@ let _extends = Object.assign || function (target) {
   }
   return target;
 };
+
+// 设置开关，避免第一次进入页面的时候把自定义数据删除了
+let flag = false
+// 微信全局路由切换监听
+wx.onAppRoute(function(res){
+  console.log('微信全局路由切换监听', res);
+  if(flag){
+    wx.clearCustomData()
+  }
+  else {
+    flag = true
+  }
+})
 
 export default function () {
     // 判断是否传入参数
@@ -40,5 +52,22 @@ export default function () {
         // 再用备份的wx对象, 执行改写后的参数对象，这样就可以不影响原生小程序的wx.request使用，而且我们也做了拦截器对象interceptors
         oldWx.request(newParms)
     }
+    // 添加自定义全局数据，每个上报的数据都有，用于保存用户名等固定信息
+    newWx.addGlobalData = function(obj){
+      newWx.globalData2 = obj
+    }
+    // 删除全局数据
+    newWx.clearGlobalData = function(obj){
+      newWx.globalData = null
+    }
+    // 添加设置自定义数据方法
+    newWx.addCustomData = function(obj){
+      newWx.customData = obj
+    }
+    // 删除自定义数据
+    newWx.clearCustomData = function(){
+      newWx.customData = null
+    }
+
     wx = newWx
 }

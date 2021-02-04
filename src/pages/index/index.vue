@@ -2,43 +2,47 @@
   <view class="index">
     <NumberDisplay/>
     <NumberSubmit/>
-    <!-- <FrontTool /> -->
     <tool :menu="menu" />
-    <view @tap="go">点我请求</view>
+    <view @tap="myClick">点我请求</view>
+    <view @tap="goto">跳转页面</view>
   </view>
 </template>
 
 <script>
+import Taro from '@tarojs/taro'
 import NumberDisplay from '../../components/NumberDisplay.vue'
 import NumberSubmit from '../../components/NumberSubmit.vue'
-import FrontTool from '../../components/front-tool'
 
 export default {
   name: 'Index',
   components: {
     NumberDisplay,
     NumberSubmit,
-    FrontTool
   },
   data(){
     return {
       menu: [{
-        name: 'asdg',
+        name: '自定义菜单',
         callback: function (){
-          console.log(111);
+          console.log('自定义菜单');
         }
       }]
     }
   },
   mounted(){
-    console.log('121');
-    this.re()
+    this.request()
+    wx.addCustomData({
+      name: 'addCustomData'
+    })
   },
   methods:{
-    go(){
-      this.re()
+    myClick(){
+      this.request()
     },
-    re(){
+    goto(){
+       Taro.navigateTo({ url: '/pages/home/index' })
+    },
+    request(){
       wx.request({
           url: 'http://api.wanggege.cn', //仅为示例，并非真实的接口地址
           data: {
